@@ -8,30 +8,28 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "subjects")
+@Table(name = "admins")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubjectModel {
+public class AdminModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "subject_name", nullable = false, unique = true)
-    private String subjectName;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private UserModel user;
 
-    @Column(name = "subject_description")
-    private String subjectDescription;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
-    private Integer credit;
+    @Column(unique = true)
+    private String email;
 
-    private String teacher;
-
-    private String semester;
-
-    private String status;
+    private String phone;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
