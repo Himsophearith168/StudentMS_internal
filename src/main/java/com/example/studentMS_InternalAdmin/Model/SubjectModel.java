@@ -17,6 +17,7 @@ public class SubjectModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "subjectid")
     private Long id;
 
     @Column(name = "subject_name", nullable = false, unique = true)

@@ -8,6 +8,10 @@ import java.util.Optional;
 public interface ClassRepository extends JpaRepository<ClassModel,Long> {
     Optional<ClassModel> findByClassName(String className);
     Optional<ClassModel> findBySemester(String semester);
-    Optional<ClassModel> findByAcademicYear(Integer academicYear);
+    Optional<ClassModel> findByAcademicYear(String academicYear);
+
+    boolean existsByClassName(String className);
+    boolean existsBySemester(String semester);
+    boolean existsByAcademicYear(String academicYear);
 
 }

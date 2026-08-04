@@ -17,6 +17,7 @@ public class ClassModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "classid")
     private Long id;
 
     @Column(name = "class_name", nullable = false, unique = true)
