@@ -3,6 +3,10 @@ package com.example.studentMS_InternalAdmin.Execption;
 import com.example.studentMS_InternalAdmin.Util.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +25,33 @@ public class GlobalExectionHandler {
                 .message(ex.getMessage())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
+    public ResponseEntity<APIResponse<Object>> handleBadCredentialsException(Exception ex) {
+        APIResponse<Object> response = APIResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message("Invalid username or password")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<APIResponse<Object>> handleDisabledException(DisabledException ex) {
+        APIResponse<Object> response = APIResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message("Account is disabled")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<APIResponse<Object>> handleLockedException(LockedException ex) {
+        APIResponse<Object> response = APIResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message("Account is locked")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
