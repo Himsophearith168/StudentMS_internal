@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PermissionStatusUpdateRequest {
 
+    private Long permissionId;
+
     @NotNull(message = "Status is required (APPROVED or REJECTED)")
     private PermissionStatus status;
 
@@ -20,3 +22,4 @@ public class PermissionStatusUpdateRequest {
 
     private String remark;
 }
+

@@ -10,4 +10,6 @@ public interface PermissionRepository extends JpaRepository<PermissionModel, Lon
     List<PermissionModel> findByStudentId(Long studentId);
     List<PermissionModel> findByStatus(PermissionStatus status);
     long countByStudentIdAndStatus(Long studentId, PermissionStatus status);
+    List<PermissionModel> findByStudentIdAndStatusOrderByIdDesc(Long studentId, PermissionStatus status);
 }
+

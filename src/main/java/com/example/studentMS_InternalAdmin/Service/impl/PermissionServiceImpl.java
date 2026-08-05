@@ -75,6 +75,38 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
+    public PermissionResponse updatePermissionStatusByBody(PermissionStatusUpdateRequest request) {
+        if (request.getPermissionId() == null) {
+            throw new IllegalArgumentException("Permission ID must be provided in the request body");
+        }
+        return updatePermissionStatus(request.getPermissionId(), request);
+    }
+
+    @Override
+    public PermissionResponse updateLatestPermissionByStudent(Long studentId, PermissionStatusUpdateRequest request) {
+        if (!studentRepository.existsById(studentId)) {
+            throw new ResourceNotFoundException("Student not found with id: " + studentId);
+        }
+
+        List<PermissionModel> pendingRequests = permissionRepository
+                .findByStudentIdAndStatusOrderByIdDesc(studentId, PermissionStatus.PENDING);
+
+        if (pendingRequests.isEmpty()) {
+            throw new ResourceNotFoundException("No PENDING permission request found for student id: " + studentId);
+        }
+
+        PermissionModel latestPending = pendingRequests.get(0);
+        latestPending.setStatus(request.getStatus());
+        latestPending.setApprovedBy(request.getApprovedBy() != null ? request.getApprovedBy() : "TEACHER");
+        latestPending.setApprovedDate(LocalDateTime.now());
+        latestPending.setRemark(request.getRemark());
+
+        PermissionModel updated = permissionRepository.save(latestPending);
+        return PermissionMapper.toDTO(updated);
+    }
+
+
+    @Override
     public List<PermissionResponse> getAllPermissions() {
         return permissionRepository.findAll()
                 .stream()

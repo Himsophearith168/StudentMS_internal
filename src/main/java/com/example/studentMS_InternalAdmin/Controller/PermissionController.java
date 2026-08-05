@@ -68,6 +68,7 @@ public class PermissionController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // Option 1: Update status by Permission ID in URL path
     @PutMapping("/{id}/status")
     public ResponseEntity<APIResponse<PermissionResponse>> updatePermissionStatus(
             @PathVariable Long id,
@@ -80,4 +81,32 @@ public class PermissionController {
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
+
+    // Option 2: Update status by permissionId in JSON request body
+    @PutMapping("/status")
+    public ResponseEntity<APIResponse<PermissionResponse>> updatePermissionStatusByBody(
+            @Valid @RequestBody PermissionStatusUpdateRequest request) {
+        PermissionResponse response = permissionService.updatePermissionStatusByBody(request);
+        APIResponse<PermissionResponse> apiResponse = APIResponse.<PermissionResponse>builder()
+                .status(HttpStatus.OK.value())
+                .message("Permission request status updated successfully")
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Option 3: Update latest pending permission by studentId
+    @PutMapping("/student/{studentId}/latest-status")
+    public ResponseEntity<APIResponse<PermissionResponse>> updateLatestPermissionByStudent(
+            @PathVariable Long studentId,
+            @Valid @RequestBody PermissionStatusUpdateRequest request) {
+        PermissionResponse response = permissionService.updateLatestPermissionByStudent(studentId, request);
+        APIResponse<PermissionResponse> apiResponse = APIResponse.<PermissionResponse>builder()
+                .status(HttpStatus.OK.value())
+                .message("Latest pending permission request status updated successfully")
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
 }
