@@ -11,10 +11,7 @@ public class SubjectMapper {
         return SubjectModel.builder()
                 .subjectName(dto.getSubjectName())
                 .subjectDescription(dto.getSubjectDescription())
-                .credit(dto.getCredit())
-                .teacher(dto.getTeacher())
                 .semester(dto.getSemester())
-                .status(dto.getStatus() != null ? dto.getStatus() : "ACTIVE")
                 .build();
     }
 
@@ -24,11 +21,9 @@ public class SubjectMapper {
                 .id(model.getId())
                 .subjectName(model.getSubjectName())
                 .subjectDescription(model.getSubjectDescription())
-                .credit(model.getCredit())
-                .teacher(model.getTeacher())
                 .semester(model.getSemester())
-                .status(model.getStatus())
                 .createdAt(model.getCreatedAt())
+                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 }

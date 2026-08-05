@@ -26,13 +26,8 @@ public class SubjectModel {
     @Column(name = "subject_description")
     private String subjectDescription;
 
-    private Integer credit;
-
-    private String teacher;
-
     private String semester;
 
-    private String status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

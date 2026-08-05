@@ -16,9 +16,8 @@ public class SubjectResponse {
     private Long id;
     private String subjectName;
     private String subjectDescription;
-    private Integer credit;
-    private String teacher;
     private String semester;
-    private String status;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 }

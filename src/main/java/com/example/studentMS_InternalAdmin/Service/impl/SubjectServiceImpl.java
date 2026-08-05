@@ -45,12 +45,7 @@ public class SubjectServiceImpl implements SubjectService {
 
         existing.setSubjectName(request.getSubjectName());
         existing.setSubjectDescription(request.getSubjectDescription());
-        existing.setCredit(request.getCredit());
-        existing.setTeacher(request.getTeacher());
         existing.setSemester(request.getSemester());
-        if (request.getStatus() != null) {
-            existing.setStatus(request.getStatus());
-        }
 
         SubjectModel updated = subjectRepository.save(existing);
         return SubjectMapper.toDTO(updated);

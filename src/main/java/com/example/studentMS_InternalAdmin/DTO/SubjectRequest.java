@@ -1,6 +1,5 @@
 package com.example.studentMS_InternalAdmin.DTO;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,12 +17,7 @@ public class SubjectRequest {
 
     private String subjectDescription;
 
-    @Min(value = 1, message = "Credit must be at least 1")
-    private Integer credit;
-
-    private String teacher;
-
+    @NotBlank(message = "The Semester to Study is Require!!")
     private String semester;
 
-    private String status;
 }
