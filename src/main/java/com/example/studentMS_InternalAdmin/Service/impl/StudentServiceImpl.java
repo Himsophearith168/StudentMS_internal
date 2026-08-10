@@ -97,6 +97,34 @@ public class StudentServiceImpl implements StudentService {
         StudentModel existing = studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
 
+        // Update Student Code if provided and changed
+        if (request.getStudentCode() != null && !request.getStudentCode().equals(existing.getStudentCode())) {
+            if (studentRepository.existsByStudentCode(request.getStudentCode())) {
+                throw new IllegalArgumentException("Student code already exists: " + request.getStudentCode());
+            }
+            existing.setStudentCode(request.getStudentCode());
+        }
+
+        // Update User (username, password) if user exists
+        UserModel user = existing.getUser();
+        if (user != null) {
+            boolean userUpdated = false;
+            if (request.getUsername() != null && !request.getUsername().equals(user.getUsername())) {
+                if (userRepository.existsByUsername(request.getUsername())) {
+                    throw new IllegalArgumentException("Username already exists: " + request.getUsername());
+                }
+                user.setUsername(request.getUsername());
+                userUpdated = true;
+            }
+            if (request.getPassword() != null && !request.getPassword().isBlank()) {
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
+                userUpdated = true;
+            }
+            if (userUpdated) {
+                userRepository.save(user);
+            }
+        }
+
         existing.setFullName(request.getFullName());
         existing.setGender(request.getGender());
         existing.setDob(request.getDob());
@@ -121,6 +149,7 @@ public class StudentServiceImpl implements StudentService {
         StudentModel updated = studentRepository.save(existing);
         return StudentMapper.toDTO(updated);
     }
+
 
     @Override
     public List<StudentResponse> getStudents() {

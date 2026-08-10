@@ -16,6 +16,12 @@ import java.util.Set;
 @Builder
 public class StudentUpdateRequest {
 
+    private String studentCode;
+
+    private String username;
+
+    private String password;
+
     @NotBlank(message = "Full name is required")
     private String fullName;
 
@@ -36,3 +42,4 @@ public class StudentUpdateRequest {
 
     private Set<Long> subjectIds;
 }
+
