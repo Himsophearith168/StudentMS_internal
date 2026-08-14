@@ -22,8 +22,6 @@ public class StudentMapper {
                 .address(model.getAddress())
                 .status(model.getStatus())
                 .className(model.getClassModel() != null ? ClassMapper.toDTO(model.getClassModel()) : null)
-                .subjects(model.getSubjects() != null ?
-                        model.getSubjects().stream().map(SubjectMapper::toDTO).collect(Collectors.toSet()) : null)
                 .createdAt(model.getCreatedAt())
                 .build();
     }
