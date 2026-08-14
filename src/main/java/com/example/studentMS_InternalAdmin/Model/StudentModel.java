@@ -51,14 +51,6 @@ public class StudentModel {
     @JoinColumn(name = "class_id")
     private ClassModel classModel;
 
-    @Builder.Default
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "student_subjects",
-        joinColumns = @JoinColumn(name = "student_id"),
-        inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    private Set<SubjectModel> subjects = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

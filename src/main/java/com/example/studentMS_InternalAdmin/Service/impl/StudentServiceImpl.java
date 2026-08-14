@@ -30,7 +30,6 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final ClassRepository classRepository;
-    private final SubjectRepository subjectRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -42,7 +41,6 @@ public class StudentServiceImpl implements StudentService {
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.classRepository = classRepository;
-        this.subjectRepository = subjectRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -69,11 +67,6 @@ public class StudentServiceImpl implements StudentService {
                     .orElseThrow(() -> new ResourceNotFoundException("Class not found with id: " + request.getClassId()));
         }
 
-        Set<SubjectModel> subjects = new HashSet<>();
-        if (request.getSubjectIds() != null && !request.getSubjectIds().isEmpty()) {
-            subjects = new HashSet<>(subjectRepository.findAllById(request.getSubjectIds()));
-        }
-
         StudentModel student = StudentModel.builder()
                 .studentCode(request.getStudentCode())
                 .user(savedUser)
@@ -85,7 +78,6 @@ public class StudentServiceImpl implements StudentService {
                 .address(request.getAddress())
                 .status("ACTIVE")
                 .classModel(classModel)
-                .subjects(subjects)
                 .build();
 
         StudentModel savedStudent = studentRepository.save(student);
@@ -97,15 +89,12 @@ public class StudentServiceImpl implements StudentService {
         StudentModel existing = studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
 
-        // Update Student Code if provided and changed
         if (request.getStudentCode() != null && !request.getStudentCode().equals(existing.getStudentCode())) {
             if (studentRepository.existsByStudentCode(request.getStudentCode())) {
                 throw new IllegalArgumentException("Student code already exists: " + request.getStudentCode());
             }
             existing.setStudentCode(request.getStudentCode());
         }
-
-        // Update User (username, password) if user exists
         UserModel user = existing.getUser();
         if (user != null) {
             boolean userUpdated = false;
@@ -141,10 +130,6 @@ public class StudentServiceImpl implements StudentService {
             existing.setClassModel(classModel);
         }
 
-        if (request.getSubjectIds() != null) {
-            Set<SubjectModel> subjects = new HashSet<>(subjectRepository.findAllById(request.getSubjectIds()));
-            existing.setSubjects(subjects);
-        }
 
         StudentModel updated = studentRepository.save(existing);
         return StudentMapper.toDTO(updated);
@@ -173,15 +158,4 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.delete(student);
     }
 
-    @Override
-    public StudentResponse enrollSubjects(Long id, Set<Long> subjectIds) {
-        StudentModel student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
-
-        Set<SubjectModel> subjects = new HashSet<>(subjectRepository.findAllById(subjectIds));
-        student.getSubjects().addAll(subjects);
-
-        StudentModel updated = studentRepository.save(student);
-        return StudentMapper.toDTO(updated);
-    }
 }

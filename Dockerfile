@@ -11,9 +11,6 @@ RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 COPY src ./src
 RUN ./mvnw package -DskipTests -B
 
-# ─────────────────────────────────────────────────────────────
-#  Stage 2: Runtime — minimal JRE image
-# ─────────────────────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
@@ -22,11 +19,8 @@ WORKDIR /app
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 
-# Copy the fat JAR from the builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
-# Expose Spring Boot default port
 EXPOSE 8080
 
-# Activate the "docker" Spring profile at runtime
 ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "app.jar"]

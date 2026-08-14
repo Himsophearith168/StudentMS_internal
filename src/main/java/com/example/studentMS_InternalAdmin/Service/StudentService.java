@@ -13,5 +13,5 @@ public interface StudentService {
     List<StudentResponse> getStudents();
     StudentResponse getStudent(Long id);
     void deleteStudent(Long id);
-    StudentResponse enrollSubjects(Long id, Set<Long> subjectIds);
+
 }

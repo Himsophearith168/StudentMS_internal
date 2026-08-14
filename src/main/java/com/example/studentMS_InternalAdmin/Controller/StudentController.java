@@ -69,17 +69,6 @@ public class StudentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PostMapping("/{id}/enroll-subjects")
-    public ResponseEntity<APIResponse<StudentResponse>> enrollSubjects(@PathVariable Long id, @RequestBody Set<Long> subjectIds) {
-        StudentResponse response = studentService.enrollSubjects(id, subjectIds);
-        APIResponse<StudentResponse> apiResponse = APIResponse.<StudentResponse>builder()
-                .status(HttpStatus.OK.value())
-                .message("Subjects enrolled successfully")
-                .data(response)
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse<Void>> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);

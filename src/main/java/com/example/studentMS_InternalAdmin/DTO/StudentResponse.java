@@ -26,6 +26,5 @@ public class StudentResponse {
     private String address;
     private String status;
     private ClassResponse className;
-    private Set<SubjectResponse> subjects;
     private LocalDateTime createdAt;
 }

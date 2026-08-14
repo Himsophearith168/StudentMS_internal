@@ -41,5 +41,4 @@ public class StudentCreateRequest {
 
     private Long classId;
 
-    private Set<Long> subjectIds;
 }
