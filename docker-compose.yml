@@ -39,7 +39,7 @@ services:
       APP_JWT_SECRET:             ${JWT_SECRET}
       APP_JWT_EXPIRATION_MS:      ${JWT_EXPIRATION_MS}
     ports:
-      - "8081:8080"
+      - "8082:8083"
     networks:
       - studentms_network
 
