@@ -44,8 +44,9 @@ public class SubjectServiceImpl implements SubjectService {
         }
 
         existing.setSubjectName(request.getSubjectName());
-        existing.setSubjectDescription(request.getSubjectDescription());
-        existing.setSemester(request.getSemester());
+        if (request.getMaxScore() != null) {
+            existing.setMaxScore(request.getMaxScore());
+        }
 
         SubjectModel updated = subjectRepository.save(existing);
         return SubjectMapper.toDTO(updated);

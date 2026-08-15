@@ -1,7 +1,7 @@
 package com.example.studentMS_InternalAdmin.Security;
 
-import com.example.studentMS_InternalAdmin.Model.UserModel;
-import com.example.studentMS_InternalAdmin.Repository.UserRepository;
+import com.example.studentMS_InternalAdmin.Model.AdminModel;
+import com.example.studentMS_InternalAdmin.Repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,22 +15,23 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(AdminRepository adminRepository) {
+        this.adminRepository = adminRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        AdminModel admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Staff user not found with username: " + username));
 
+        String role = admin.getRole() != null ? admin.getRole() : "TEACHER";
         return new User(
-                user.getUsername(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+                admin.getUsername(),
+                admin.getPasswordHash(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
         );
     }
 }

@@ -2,8 +2,8 @@ package com.example.studentMS_InternalAdmin.Service.impl;
 
 import com.example.studentMS_InternalAdmin.DTO.AuthResponse;
 import com.example.studentMS_InternalAdmin.DTO.LoginRequest;
-import com.example.studentMS_InternalAdmin.Model.UserModel;
-import com.example.studentMS_InternalAdmin.Repository.UserRepository;
+import com.example.studentMS_InternalAdmin.Model.AdminModel;
+import com.example.studentMS_InternalAdmin.Repository.AdminRepository;
 import com.example.studentMS_InternalAdmin.Security.JwtTokenProvider;
 import com.example.studentMS_InternalAdmin.Service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
-    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
 
     @Autowired
-    public AuthServiceImpl(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, UserRepository userRepository) {
+    public AuthServiceImpl(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, AdminRepository adminRepository) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
-        this.userRepository = userRepository;
+        this.adminRepository = adminRepository;
     }
 
     @Override
@@ -41,9 +41,9 @@ public class AuthServiceImpl implements AuthService {
 
         String token = tokenProvider.generateToken(authentication);
 
-        UserModel user = userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + loginRequest.getUsername()));
+        AdminModel admin = adminRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Staff user not found: " + loginRequest.getUsername()));
 
-        return AuthResponse.of(token, user.getUsername(), user.getRole().name());
+        return AuthResponse.of(token, admin.getUsername(), admin.getRole());
     }
 }

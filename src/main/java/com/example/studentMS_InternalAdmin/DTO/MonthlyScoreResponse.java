@@ -11,19 +11,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ScoreResponse {
-
+public class MonthlyScoreResponse {
     private Long id;
     private Long studentId;
     private String studentName;
-    private String studentCode;
     private Long subjectId;
     private String subjectName;
-    private Double quiz;
-    private Double assignment;
-    private Double midterm;
-    private Double finalExam;
-    private Double attendance;
-    private Double totalScore;
+    private Integer semester;
+    private String monthName;
+    private Double score;
     private LocalDateTime createdAt;
 }

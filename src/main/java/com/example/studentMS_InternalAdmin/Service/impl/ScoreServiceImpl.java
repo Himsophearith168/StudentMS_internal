@@ -1,13 +1,15 @@
 package com.example.studentMS_InternalAdmin.Service.impl;
 
-import com.example.studentMS_InternalAdmin.DTO.ScoreRequest;
-import com.example.studentMS_InternalAdmin.DTO.ScoreResponse;
+import com.example.studentMS_InternalAdmin.DTO.*;
 import com.example.studentMS_InternalAdmin.Execption.ResourceNotFoundException;
-import com.example.studentMS_InternalAdmin.Mapper.ScoreMapper;
-import com.example.studentMS_InternalAdmin.Model.ScoreModel;
+import com.example.studentMS_InternalAdmin.Mapper.MonthlyScoreMapper;
+import com.example.studentMS_InternalAdmin.Mapper.SemesterScoreMapper;
+import com.example.studentMS_InternalAdmin.Model.MonthlyScoreModel;
+import com.example.studentMS_InternalAdmin.Model.SemesterScoreModel;
 import com.example.studentMS_InternalAdmin.Model.StudentModel;
 import com.example.studentMS_InternalAdmin.Model.SubjectModel;
-import com.example.studentMS_InternalAdmin.Repository.ScoreRepository;
+import com.example.studentMS_InternalAdmin.Repository.MonthlyScoreRepository;
+import com.example.studentMS_InternalAdmin.Repository.SemesterScoreRepository;
 import com.example.studentMS_InternalAdmin.Repository.StudentRepository;
 import com.example.studentMS_InternalAdmin.Repository.SubjectRepository;
 import com.example.studentMS_InternalAdmin.Service.ScoreService;
@@ -15,104 +17,105 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ScoreServiceImpl implements ScoreService {
 
-    private final ScoreRepository scoreRepository;
+    private final MonthlyScoreRepository monthlyScoreRepository;
+    private final SemesterScoreRepository semesterScoreRepository;
     private final StudentRepository studentRepository;
     private final SubjectRepository subjectRepository;
 
     @Autowired
-    public ScoreServiceImpl(ScoreRepository scoreRepository, StudentRepository studentRepository, SubjectRepository subjectRepository) {
-        this.scoreRepository = scoreRepository;
+    public ScoreServiceImpl(MonthlyScoreRepository monthlyScoreRepository,
+                            SemesterScoreRepository semesterScoreRepository,
+                            StudentRepository studentRepository,
+                            SubjectRepository subjectRepository) {
+        this.monthlyScoreRepository = monthlyScoreRepository;
+        this.semesterScoreRepository = semesterScoreRepository;
         this.studentRepository = studentRepository;
         this.subjectRepository = subjectRepository;
     }
 
     @Override
-    public ScoreResponse recordScore(ScoreRequest request) {
+    public MonthlyScoreResponse recordMonthlyScore(MonthlyScoreRequest request) {
         StudentModel student = studentRepository.findById(request.getStudentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + request.getStudentId()));
 
         SubjectModel subject = subjectRepository.findById(request.getSubjectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + request.getSubjectId()));
 
-        if (scoreRepository.existsByStudentIdAndSubjectId(student.getId(), subject.getId())) {
-            throw new IllegalArgumentException("Score record already exists for this student and subject");
-        }
-
-        ScoreModel scoreModel = ScoreModel.builder()
-                .student(student)
-                .subject(subject)
-                .quiz(request.getQuiz() != null ? request.getQuiz() : 0.0)
-                .assignment(request.getAssignment() != null ? request.getAssignment() : 0.0)
-                .midterm(request.getMidterm() != null ? request.getMidterm() : 0.0)
-                .finalExam(request.getFinalExam() != null ? request.getFinalExam() : 0.0)
-                .attendance(request.getAttendance() != null ? request.getAttendance() : 0.0)
-                .build();
-
-        ScoreModel saved = scoreRepository.save(scoreModel);
-        return ScoreMapper.toDTO(saved);
+        MonthlyScoreModel entity = MonthlyScoreMapper.toEntity(request, student, subject);
+        MonthlyScoreModel saved = monthlyScoreRepository.save(entity);
+        return MonthlyScoreMapper.toDTO(saved);
     }
 
     @Override
-    public ScoreResponse updateScore(Long id, ScoreRequest request) {
-        ScoreModel existing = scoreRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Score record not found with id: " + id));
-
-        if (request.getQuiz() != null) existing.setQuiz(request.getQuiz());
-        if (request.getAssignment() != null) existing.setAssignment(request.getAssignment());
-        if (request.getMidterm() != null) existing.setMidterm(request.getMidterm());
-        if (request.getFinalExam() != null) existing.setFinalExam(request.getFinalExam());
-        if (request.getAttendance() != null) existing.setAttendance(request.getAttendance());
-
-        ScoreModel updated = scoreRepository.save(existing);
-        return ScoreMapper.toDTO(updated);
-    }
-
-    @Override
-    public List<ScoreResponse> getAllScores() {
-        return scoreRepository.findAll()
-                .stream()
-                .map(ScoreMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ScoreResponse> getScoresByStudent(Long studentId) {
+    public List<MonthlyScoreResponse> getMonthlyScoresByStudent(Long studentId) {
         if (!studentRepository.existsById(studentId)) {
             throw new ResourceNotFoundException("Student not found with id: " + studentId);
         }
-        return scoreRepository.findByStudentId(studentId)
+        return monthlyScoreRepository.findByStudentId(studentId)
                 .stream()
-                .map(ScoreMapper::toDTO)
+                .map(MonthlyScoreMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ScoreResponse> getScoresBySubject(Long subjectId) {
-        if (!subjectRepository.existsById(subjectId)) {
-            throw new ResourceNotFoundException("Subject not found with id: " + subjectId);
+    public List<MonthlyScoreResponse> getMonthlyScoresByStudentAndSemester(Long studentId, Integer semester) {
+        if (!studentRepository.existsById(studentId)) {
+            throw new ResourceNotFoundException("Student not found with id: " + studentId);
         }
-        return scoreRepository.findBySubjectId(subjectId)
+        return monthlyScoreRepository.findByStudentIdAndSemester(studentId, semester)
                 .stream()
-                .map(ScoreMapper::toDTO)
+                .map(MonthlyScoreMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ScoreResponse getScore(Long id) {
-        ScoreModel scoreModel = scoreRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Score record not found with id: " + id));
-        return ScoreMapper.toDTO(scoreModel);
+    public SemesterScoreResponse recordSemesterScore(SemesterScoreRequest request) {
+        StudentModel student = studentRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + request.getStudentId()));
+
+        SubjectModel subject = subjectRepository.findById(request.getSubjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + request.getSubjectId()));
+
+        Optional<SemesterScoreModel> existing = semesterScoreRepository.findByStudentIdAndSubjectIdAndSemester(
+                request.getStudentId(), request.getSubjectId(), request.getSemester());
+
+        SemesterScoreModel entity;
+        if (existing.isPresent()) {
+            entity = existing.get();
+            entity.setExamScore(request.getExamScore());
+        } else {
+            entity = SemesterScoreMapper.toEntity(request, student, subject);
+        }
+
+        SemesterScoreModel saved = semesterScoreRepository.save(entity);
+        return SemesterScoreMapper.toDTO(saved);
     }
 
     @Override
-    public void deleteScore(Long id) {
-        ScoreModel scoreModel = scoreRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Score record not found with id: " + id));
-        scoreRepository.delete(scoreModel);
+    public List<SemesterScoreResponse> getSemesterScoresByStudent(Long studentId) {
+        if (!studentRepository.existsById(studentId)) {
+            throw new ResourceNotFoundException("Student not found with id: " + studentId);
+        }
+        return semesterScoreRepository.findByStudentId(studentId)
+                .stream()
+                .map(SemesterScoreMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SemesterScoreResponse> getSemesterScoresByStudentAndSemester(Long studentId, Integer semester) {
+        if (!studentRepository.existsById(studentId)) {
+            throw new ResourceNotFoundException("Student not found with id: " + studentId);
+        }
+        return semesterScoreRepository.findByStudentIdAndSemester(studentId, semester)
+                .stream()
+                .map(SemesterScoreMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

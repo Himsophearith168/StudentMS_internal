@@ -8,17 +8,18 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "scores")
+@Table(name = "monthly_scores")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(exclude = {"student", "subject"})
 @ToString(exclude = {"student", "subject"})
-public class ScoreModel {
+public class MonthlyScoreModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "monthly_score_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,24 +30,14 @@ public class ScoreModel {
     @JoinColumn(name = "subject_id", nullable = false)
     private SubjectModel subject;
 
-    @Builder.Default
-    private Double quiz = 0.0;
+    @Column(name = "semester", nullable = false)
+    private Integer semester; // 1 or 2
 
-    @Builder.Default
-    private Double assignment = 0.0;
+    @Column(name = "month_name", nullable = false, length = 20)
+    private String monthName;
 
-    @Builder.Default
-    private Double midterm = 0.0;
-
-    @Column(name = "final_exam")
-    @Builder.Default
-    private Double finalExam = 0.0;
-
-    @Builder.Default
-    private Double attendance = 0.0;
-
-    @Column(name = "total_score")
-    private Double totalScore;
+    @Column(name = "score", columnDefinition = "DECIMAL(5,2)", nullable = false)
+    private Double score;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -55,15 +46,4 @@ public class ScoreModel {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    @PreUpdate
-    public void calculateTotalScore() {
-        double q = quiz != null ? quiz : 0.0;
-        double a = assignment != null ? assignment : 0.0;
-        double m = midterm != null ? midterm : 0.0;
-        double f = finalExam != null ? finalExam : 0.0;
-        double att = attendance != null ? attendance : 0.0;
-        this.totalScore = q + a + m + f + att;
-    }
 }

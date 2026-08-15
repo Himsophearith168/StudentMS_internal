@@ -10,8 +10,7 @@ public class SubjectMapper {
         if (dto == null) return null;
         return SubjectModel.builder()
                 .subjectName(dto.getSubjectName())
-                .subjectDescription(dto.getSubjectDescription())
-                .semester(dto.getSemester())
+                .maxScore(dto.getMaxScore() != null ? dto.getMaxScore() : 10.00)
                 .build();
     }
 
@@ -20,10 +19,8 @@ public class SubjectMapper {
         return SubjectResponse.builder()
                 .id(model.getId())
                 .subjectName(model.getSubjectName())
-                .subjectDescription(model.getSubjectDescription())
-                .semester(model.getSemester())
+                .maxScore(model.getMaxScore())
                 .createdAt(model.getCreatedAt())
-                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 }

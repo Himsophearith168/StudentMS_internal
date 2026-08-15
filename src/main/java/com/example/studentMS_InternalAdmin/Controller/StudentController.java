@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/students")
@@ -30,7 +29,7 @@ public class StudentController {
         StudentResponse response = studentService.createStudent(request);
         APIResponse<StudentResponse> apiResponse = APIResponse.<StudentResponse>builder()
                 .status(HttpStatus.CREATED.value())
-                .message("Student account created successfully")
+                .message("Student profile created successfully")
                 .data(response)
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
@@ -42,6 +41,17 @@ public class StudentController {
         APIResponse<List<StudentResponse>> apiResponse = APIResponse.<List<StudentResponse>>builder()
                 .status(HttpStatus.OK.value())
                 .message("Students retrieved successfully")
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/class/{classId}")
+    public ResponseEntity<APIResponse<List<StudentResponse>>> getStudentsByClass(@PathVariable Long classId) {
+        List<StudentResponse> responses = studentService.getStudentsByClass(classId);
+        APIResponse<List<StudentResponse>> apiResponse = APIResponse.<List<StudentResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .message("Class roster retrieved successfully")
                 .data(responses)
                 .build();
         return ResponseEntity.ok(apiResponse);

@@ -8,14 +8,15 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class ClassResponse {
+public class AdminResponse {
+
     private Long id;
-    private String className;
-    private String academicYear;
-    private Long teacherId;
-    private String teacherName;
+    private String username;
+    private String fullName;
+    private String email;
+    private String role;
     private LocalDateTime createdAt;
 }

@@ -1,6 +1,5 @@
 package com.example.studentMS_InternalAdmin.DTO;
 
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,14 +9,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StudentUpdateRequest {
-
+public class FinalScoreResponse {
+    private Long id;
+    private Long studentId;
     private String studentCode;
-    private String fullName;
-
-    @Pattern(regexp = "^(M|F)$", message = "Gender must be 'M' or 'F'")
+    private String studentName;
     private String gender;
-
-    private Long classId;
     private Integer rollNumber;
+    private String academicYear;
+    private Double semester1Avg;
+    private Double semester2Avg;
+    private Double annualAvg;
+    private Integer classRank;
+    private String gradeMention;
 }

@@ -1,5 +1,6 @@
 package com.example.studentMS_InternalAdmin.DTO;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,9 +16,7 @@ public class SubjectRequest {
     @NotBlank(message = "Subject name is required")
     private String subjectName;
 
-    private String subjectDescription;
-
-    @NotBlank(message = "The Semester to Study is Require!!")
-    private String semester;
-
+    @DecimalMin(value = "0.0", message = "Max score must be greater than or equal to 0")
+    @Builder.Default
+    private Double maxScore = 10.00;
 }

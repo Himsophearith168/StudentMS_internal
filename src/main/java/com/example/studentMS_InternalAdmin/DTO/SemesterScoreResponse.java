@@ -8,14 +8,16 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class ClassResponse {
+public class SemesterScoreResponse {
     private Long id;
-    private String className;
-    private String academicYear;
-    private Long teacherId;
-    private String teacherName;
+    private Long studentId;
+    private String studentName;
+    private Long subjectId;
+    private String subjectName;
+    private Integer semester;
+    private Double examScore;
     private LocalDateTime createdAt;
 }

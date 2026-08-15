@@ -15,9 +15,6 @@ public class SubjectResponse {
 
     private Long id;
     private String subjectName;
-    private String subjectDescription;
-    private String semester;
+    private Double maxScore;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
 }

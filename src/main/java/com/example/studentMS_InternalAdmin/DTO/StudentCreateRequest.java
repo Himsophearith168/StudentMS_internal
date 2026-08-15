@@ -1,14 +1,12 @@
 package com.example.studentMS_InternalAdmin.DTO;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -19,26 +17,16 @@ public class StudentCreateRequest {
     @NotBlank(message = "Student code is required")
     private String studentCode;
 
-    @NotBlank(message = "Username is required")
-    private String username;
-
-    @NotBlank(message = "Password is required")
-    private String password;
-
     @NotBlank(message = "Full name is required")
     private String fullName;
 
+    @NotBlank(message = "Gender is required")
+    @Pattern(regexp = "^(M|F)$", message = "Gender must be 'M' or 'F'")
     private String gender;
 
-    private LocalDate dob;
-
-    private String phone;
-
-    @Email(message = "Invalid email format")
-    private String email;
-
-    private String address;
-
+    @NotNull(message = "Class ID is required")
     private Long classId;
 
+    @NotNull(message = "Roll number is required")
+    private Integer rollNumber;
 }
